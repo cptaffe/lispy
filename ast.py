@@ -41,7 +41,7 @@ class AstNode(object):
 		self.string = string
 	def __repr__(self):
 		if self.string != None:
-			string = "(" + repr(self.typ) + ":\"" + self.string + "\")"
+			string = "(" + repr(self.typ) + ":\"" + str(self.string) + "\")"
 		else:
 			string = "(" + repr(self.typ) + ")"
 		return string

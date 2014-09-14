@@ -12,7 +12,7 @@ class pprint(object):
 		return self.string
 	def __pprint(self, tree):
 		if tree == None:
-			self.string += "none"
+			self.string += "nil"
 		elif tree.data == None:
 			self.__pprint_child(tree.child, "\n")
 		else:
@@ -22,13 +22,13 @@ class pprint(object):
 				self.__pprint_active_child(tree.child, " ")
 				self.string += ")"
 			elif typ == "il":
-				self.string += "`{"
+				self.string += "\x1b[33;1m"+"`"+"\x1b[30;1m"+"{"+"\x1b[0m"
 				self.__pprint_child(tree.child, " ")
-				self.string += "}"
+				self.string += "\x1b[30;1m"+"}"+"\x1b[0m"
 			elif typ == "id":
-				self.string += "\x1b[32;1m" + tree.data.string + "\x1b[0m"
+				self.string += "\x1b[32;1m" + str(tree.data.string) + "\x1b[0m"
 			elif typ == "n":
-				self.string += "\x1b[31;1m" + tree.data.string + "\x1b[0m"
+				self.string += "\x1b[31;1m" + str(tree.data.string) + "\x1b[0m"
 	def __pprint_child(self, ls, sep):
 		return self.__pprint_inactive_child(ls, sep, 0)
 	def __pprint_inactive_child(self, ls, sep, x):

@@ -64,6 +64,8 @@ class Parse(object):
 				if self.inil:
 					self.inil = False
 					tree = tree.get_parent()
+				if typ_str == "n":
+					t.string = int(t.string)
 				tree.add(ast.Ast(self.tok_to_ast(t)))
 			else:
 				raise Exception("unrecognized token")
