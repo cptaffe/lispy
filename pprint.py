@@ -21,8 +21,12 @@ class pprint(object):
 				self.string += "("
 				self.__pprint_active_child(tree.child, " ")
 				self.string += ")"
-			elif typ == "il":
-				self.string += "\x1b[33;1m"+"`"+"\x1b[30;1m"+"{"+"\x1b[0m"
+			elif typ in ["il", "ne"]:
+				if typ == "il":
+					x = '`'
+				elif typ == "ne":
+					x = '!'
+				self.string += "\x1b[33;1m"+x+"\x1b[30;1m"+"{"+"\x1b[0m"
 				self.__pprint_child(tree.child, " ")
 				self.string += "\x1b[30;1m"+"}"+"\x1b[0m"
 			elif typ == "id":

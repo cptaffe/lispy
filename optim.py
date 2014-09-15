@@ -24,6 +24,8 @@ class Eval(object):
 		elif typ == "ls":
 			return self.eval_subs(tree, scope)
 		elif typ == "il":
+			return self.eval_inactive_subs(tree.child[0], scope)
+		elif typ == "ne":
 			return tree.child[0]
 		elif typ == "n":
 			return tree # leave alone

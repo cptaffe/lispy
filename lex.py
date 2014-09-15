@@ -13,6 +13,8 @@ class Lex(object):
 		while sc.next():
 			if sc.get() == '`':
 				self.list.append(tok.Tok("bt", sc.emit()))
+			elif sc.get() == '!':
+				self.list.append(tok.Tok("ex", sc.emit()))
 			elif sc.get() == '(':
 				self.list.append(tok.Tok("bp", sc.emit()))
 				self.parenDepth += 1
@@ -29,6 +31,7 @@ class Lex(object):
 		return self.list
 
 	def lex_list(self):
+		sc = self.scan
 		self.lex_space() # flush space
 		while True:
 			if not self.lex_id():
@@ -71,4 +74,4 @@ class Lex(object):
 	def is_space(self, c):
 		return c in [' ', '\t']
 	def is_symb(self, c):
-		return c in [':', '~', "!", '@', '#', '$', '%', '^', '&', '*', '+', '-', '=', '>', '<']
+		return c in [':', '~', '@', '#', '$', '%', '^', '&', '*', '+', '-', '=', '>', '<']

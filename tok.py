@@ -2,6 +2,7 @@
 
 types = [
 "bt", # backtick
+"ex", # exclamation (!)
 "bp", # beginning paren
 "ep", # ending paren
 "id", # identifier
@@ -21,4 +22,4 @@ class Tok(object):
 		self.typ = TokTyp(typ)
 		self.string = string
 	def __repr__(self):
-		return "(" + repr(self.typ) + ":\"" + self.string + "\")"
+		return "(" + repr(self.typ) + ":\"" + str(self.string) + "\")"
