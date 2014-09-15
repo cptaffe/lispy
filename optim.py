@@ -2,6 +2,11 @@
 
 import copy
 
+def give_context(otree, ntree, index):
+	ntree.parent = otree.parent
+	otree.parent.child[index] = ntree
+	return ntree
+
 class Eval(object):
 	def __init__(self, tree):
 		self.tree = tree
@@ -51,13 +56,9 @@ class Eval(object):
 				else:
 					return self.builtins.eval(tree, scope)
 			else:
-				return self.active_eval(self.give_context(tree, scope.in_var(tree.data.string).tree, 0), scope)
+				return self.active_eval(give_context(tree, scope.in_var(tree.data.string).tree, 0), scope)
 		else:
 			return self.__eval(tree, scope)
-	def give_context(self, otree, ntree, index):
-		ntree.parent = otree.parent
-		otree.parent.child[index] = ntree
-		return ntree
 
 class Scope(object):
 	def __init__(self):
@@ -78,7 +79,8 @@ class Scope(object):
 	def in_var(self, string):
 		for v in self.vars:
 			if v.name == string:
-				return copy.deepcopy(v)
+				#return copy.deepcopy(v)
+				return v
 		if self.parent:
 			return self.parent.in_var(string)
 		return False
@@ -131,7 +133,7 @@ class Builtins(object):
 	def eval_push(self, tree, scope):
 		# evaluate after push
 		for i in range(1, len(tree.child)):
-				tree.child[i] = self.ev._Eval__eval(tree.child[i])
+				tree.child[i] = self.ev._Eval__eval(tree.child[i], scope)
 		ls = tree.child[1]
 		if not repr(ls.data.typ) == "ls":
 			raise Exception("cannot push to non-list")
@@ -149,11 +151,23 @@ class Builtins(object):
 	def eval_assign(self, tree, scope):
 		if len(tree.child) != 3:
 			raise Exception("incorrect number of args for assign")
-		if not repr(tree.child[1].data.typ) == "id":
-			raise Exception("cannot assign to non-id")
-		name = tree.child[1].data.string
-		tr = tree.child[2]
-		scope.add(Var(name, tr))
+		if repr(tree.child[2].data.typ) == "id":
+			while repr(tree.child[2].data.typ) == "id":
+				if scope.is_in_var(tree.child[2].data.string):
+					give_context(tree.child[2], scope.in_var(tree.child[2].data.string).tree, 2)
+				else:
+					break
+		if repr(tree.child[1].data.typ) == "id":
+			name = tree.child[1].data.string
+			tr = tree.child[2]
+			scope.add(Var(name, tr))
+		elif repr(tree.child[1].data.typ) == "ls" and repr(tree.child[2].data.typ) == "ls":
+			for i, d in enumerate(tree.child[1].child):
+				name = d.data.string
+				tr = tree.child[2].child[i]
+				scope.add(Var(name, tr))
+		else:
+			raise Exception("cannot assign to non-var")
 		return tree.child[1]
 	def eval_eval(self, tree, scope):
 		# double eval
