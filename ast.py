@@ -22,8 +22,6 @@ class Ast(object):
 
 types = [
 "ls", # list
-"il", # inactive list
-"ne", # not evaluated
 "id", # identifier
 "n", # number
 ]

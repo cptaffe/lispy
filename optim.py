@@ -14,51 +14,54 @@ class Eval(object):
 		self.builtins = Builtins(self)
 
 	def eval(self):
-		return self.__eval(self.tree, self.vars)
+		return self.active_eval(self.tree, self.vars)
 
-	def __eval(self, tree, scope):
+	def active_eval(self, tree, scope):
 		if tree.data == None:
-			return self.eval_inactive_subs(tree, scope)
+			return self.eval_subs(tree, scope, self.active_eval)
+		typ = repr(tree.data.typ)
+		if typ == "ls":
+			# check for active list, inactive list
+			if repr(tree.child[0].data.typ) == "id":
+				# might be active
+				return self.__eval(tree.child[0], scope, self.active_eval)
+		return self.__eval(tree, scope, self.active_eval)
+
+	def inactive_eval(self, tree, scope):
+		if tree.data == None:
+			return self.eval_subs(tree, scope, recurse)
+		return self.__eval(tree, scope, self.inactive_eval)
+
+
+	def __eval(self, tree, scope, recurse):
 		typ = repr(tree.data.typ) # both astnode & tok
+
+		# list evaluation
+		if typ == "ls":
+			return self.eval_subs(tree, scope, recurse)
+
+		# evaluates identifiers
 		if typ == "id":
 			if not scope.is_in_var(tree.data.string):
-				return tree
-				#raise Exception("undefined " + "'" + tree.data.string + "'")
+				if not self.builtins.check(tree):
+					raise Exception("undefined " + "'" + tree.data.string + "'")
+				else:
+					return self.builtins.eval(tree, scope)
 			else:
-				return self.__eval(scope.in_var(tree.data.string).tree, scope)
-		elif typ == "ls":
-			return self.eval_subs(tree, scope)
-		elif typ == "il":
-			return self.eval_inactive_subs(tree.child[0], scope)
-		elif typ == "ne":
-			return tree.child[0]
+				return recurse(give_context(tree, scope.in_var(tree.data.string).tree, 0), scope)
+
+		# numbers eval to themselves
 		elif typ == "n":
 			return tree # leave alone
 		else:
 			raise Exception("unknown type in tree")
 
-	def eval_inactive_subs(self, tree, scope):
+	def eval_subs(self, tree, scope, recurse):
 		for i in range(0, len(tree.child)):
-			tree.child[i] = self.__eval(tree.child[i], scope) # evaluate child trees
+			tree.child[i] = recurse(tree.child[i], scope) # evaluate child trees
 		return tree
-	def eval_subs(self, tree, scope):
-		if repr(tree.child[0].data.typ) == "id":
-			return self.active_eval(tree.child[0], scope)
-		else:
-			raise Exception("list has no activator")
-	def active_eval(self, tree, scope):
-		typ = repr(tree.data.typ) # both astnode & tok
-		if typ == "id":
-			if not scope.is_in_var(tree.data.string):
-				if not self.builtins.check(tree):
-					return
-					#raise Exception("undefined " + "'" + tree.data.string + "'")
-				else:
-					return self.builtins.eval(tree, scope)
-			else:
-				return self.active_eval(give_context(tree, scope.in_var(tree.data.string).tree, 0), scope)
-		else:
-			return self.__eval(tree, scope)
+	def is_active_var(self, tree, scope):
+		return scope.is_in_var(tree.data.string) and scope.in_var(tree.data.string).tree.data.string in ["@", "lambda"]
 
 class Scope(object):
 	def __init__(self):
@@ -79,8 +82,7 @@ class Scope(object):
 	def in_var(self, string):
 		for v in self.vars:
 			if v.name == string:
-				#return copy.deepcopy(v)
-				return v
+				return copy.deepcopy(v)
 		if self.parent:
 			return self.parent.in_var(string)
 		return False
@@ -122,6 +124,10 @@ class Builtins(object):
 		"/": self.eval_div,
 		"lambda": self.eval_lambda,
 		"@": self.eval_lambda,
+		"!": self.eval_not_eval,
+		"`": self.eval_inactive_list,
+		".": self.eval_concat,
+		"{": self.eval_negate,
 		}
 	def check(self, tree):
 		if not tree.data.string in self.builtins:
@@ -151,12 +157,6 @@ class Builtins(object):
 	def eval_assign(self, tree, scope):
 		if len(tree.child) != 3:
 			raise Exception("incorrect number of args for assign")
-		if repr(tree.child[2].data.typ) == "id":
-			while repr(tree.child[2].data.typ) == "id":
-				if scope.is_in_var(tree.child[2].data.string):
-					give_context(tree.child[2], scope.in_var(tree.child[2].data.string).tree, 2)
-				else:
-					break
 		if repr(tree.child[1].data.typ) == "id":
 			name = tree.child[1].data.string
 			tr = tree.child[2]
@@ -164,17 +164,20 @@ class Builtins(object):
 		elif repr(tree.child[1].data.typ) == "ls" and repr(tree.child[2].data.typ) == "ls":
 			for i, d in enumerate(tree.child[1].child):
 				name = d.data.string
-				tr = tree.child[2].child[i]
+				if i < len(tree.child[2].child):
+					tr = tree.child[2].child[i]
+				else:
+					tr = copy.deepcopy(tree.child[2].child[-1])
 				scope.add(Var(name, tr))
 		else:
 			raise Exception("cannot assign to non-var")
 		return tree.child[1]
 	def eval_eval(self, tree, scope):
 		# double eval
-		return self.ev._Eval__eval(self.ev._Eval__eval(tree.child[1], scope), scope)
+		return self.ev.active_eval(self.ev.active_eval(tree.child[1], scope), scope)
 	def eval_add(self, tree, scope):
 		for i in range(1, len(tree.child)):
-				tree.child[i] = self.ev._Eval__eval(tree.child[i], scope)
+				tree.child[i] = self.ev.active_eval(tree.child[i], scope)
 		if len(tree.child) != 3:
 			raise Exception("incorrect number of args for add")
 		tree.child[1].data.string += tree.child[2].data.string
@@ -203,18 +206,35 @@ class Builtins(object):
 	def eval_lambda(self, tree, scope):
 		sc = Scope()
 		tree = tree.get_parent()
-		if len(tree.child[0].child) != 3:
+		if len(tree.child) != 3:
 			raise Exception("incorrect number of args for lambda")
 		scope.add_child(sc) # add global scope to this scope
 		lam_tree = tree.child[0]
 		sc.add(Var("self", lam_tree)) # self keyword
 		# assign keywords
 		for i, v in enumerate(lam_tree.child[1].child):
-			try:
+			if i < len(tree.child[1:]):
 				sc.add(Var(v.data.string, tree.child[i+1]))
-			except:
-				raise Exception("incorrect number of args for lambda")
-		return self.ev._Eval__eval(copy.deepcopy(lam_tree.child[2]), sc)
+			else:
+				break
+		# deep copy lambda, variables are not deep copied.
+		return self.ev.active_eval(lam_tree.child[2], sc)
+	def eval_inactive_list(self, tree, scope):
+		return self.ev.eval_subs(tree.child[1], scope, self.ev.inactive_eval)
+	def eval_not_eval(self, tree, scope):
+		return tree.child[1]
+	def eval_concat(self, tree, scope):
+		for i in range(1, len(tree.child)):
+			tree.child[i] = self.ev.active_eval(tree.child[i], scope)
+		tree.child[1].child.extend(tree.child[2].child)
+		return tree.child[1]
+	def eval_negate(self, tree, scope):
+		for i in range(1, len(tree.child)):
+				tree.child[i] = self.ev._Eval__eval(tree.child[i], scope)
+		if len(tree.child) != 2:
+			raise Exception("incorrect number of args for div")
+		tree.child[1].data.string = 0 - tree.child[1].data.string
+		return tree.child[1]
 
 
 
