@@ -139,7 +139,7 @@ class Builtins(object):
 	def eval_push(self, tree, scope):
 		# evaluate after push
 		for i in range(1, len(tree.child)):
-				tree.child[i] = self.ev._Eval__eval(tree.child[i], scope)
+				tree.child[i] = self.ev.active_eval(tree.child[i], scope)
 		ls = tree.child[1]
 		if not repr(ls.data.typ) == "ls":
 			raise Exception("cannot push to non-list")
@@ -149,7 +149,7 @@ class Builtins(object):
 	def eval_pop(self, tree, scope):
 		# before after push
 		for i in range(1, len(tree.child)):
-				tree.child[i] = self.ev._Eval__eval(tree.child[i], scope)
+				tree.child[i] = self.ev.active_eval(tree.child[i], scope)
 		ls = tree.child[1]
 		if not repr(ls.data.typ) in ["ls", "il"]:
 			raise Exception("cannot pop from non-list")
@@ -184,7 +184,7 @@ class Builtins(object):
 		return tree.child[1]
 	def eval_sub(self, tree, scope):
 		for i in range(1, len(tree.child)):
-				tree.child[i] = self.ev._Eval__eval(tree.child[i], scope)
+				tree.child[i] = self.ev.active_eval(tree.child[i], scope)
 		if len(tree.child) != 3:
 			raise Exception("incorrect number of args for sub")
 		tree.child[1].data.string -= tree.child[2].data.string
@@ -230,7 +230,7 @@ class Builtins(object):
 		return tree.child[1]
 	def eval_negate(self, tree, scope):
 		for i in range(1, len(tree.child)):
-				tree.child[i] = self.ev._Eval__eval(tree.child[i], scope)
+				tree.child[i] = self.ev.active_eval(tree.child[i], scope)
 		if len(tree.child) != 2:
 			raise Exception("incorrect number of args for div")
 		tree.child[1].data.string = 0 - tree.child[1].data.string
