@@ -24,7 +24,10 @@ class Eval(object):
 			# check for active list, inactive list
 			if repr(tree.child[0].data.typ) == "id":
 				# might be active
-				return self.__eval(tree.child[0], scope, self.active_eval)
+				return self.active_eval(tree.child[0], scope)
+			elif repr(tree.child[0].data.typ) == "ls":
+				tree = self.active_eval(tree.child[0], scope)
+				return tree
 		return self.__eval(tree, scope, self.active_eval)
 
 	def inactive_eval(self, tree, scope):
@@ -205,9 +208,9 @@ class Builtins(object):
 		return tree.child[1]
 	def eval_lambda(self, tree, scope):
 		sc = Scope()
-		tree = tree.get_parent()
 		if len(tree.child) != 3:
 			raise Exception("incorrect number of args for lambda")
+		tree = tree.get_parent()
 		scope.add_child(sc) # add global scope to this scope
 		lam_tree = tree.child[0]
 		sc.add(Var("self", lam_tree)) # self keyword
