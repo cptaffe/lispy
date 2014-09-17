@@ -7,10 +7,17 @@ lisp-like language interpreter written in python
 
 If you want to run stuff do:
 ```sh
-./main.py
+./lispy
 ```
 Note: this uses pypy, so if you don't have pypy, you can either edit the shebang or do:
 ```sh
-python main.py
+python lispy
 ```
 You can route files through stdin or whatever.
+
+## Test with input.lsp
+
+To test the compiler using input.lsp or whatevs, do:
+```sh
+./lispy < input.lsp
+```
