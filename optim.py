@@ -23,11 +23,7 @@ class Eval(object):
 		if typ == "ls":
 			# check for active list, inactive list
 			if repr(tree.child[0].data.typ) == "id":
-				# might be active
 				return self.active_eval(tree.child[0], scope)
-			elif repr(tree.child[0].data.typ) == "ls":
-				tree = self.active_eval(tree.child[0], scope)
-				return tree
 		return self.__eval(tree, scope, self.active_eval)
 
 	def inactive_eval(self, tree, scope):
@@ -63,8 +59,6 @@ class Eval(object):
 		for i in range(0, len(tree.child)):
 			tree.child[i] = recurse(tree.child[i], scope) # evaluate child trees
 		return tree
-	def is_active_var(self, tree, scope):
-		return scope.is_in_var(tree.data.string) and scope.in_var(tree.data.string).tree.data.string in ["@", "lambda"]
 
 class Scope(object):
 	def __init__(self):
