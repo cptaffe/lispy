@@ -11,4 +11,3 @@ else:
 	lispy = lis.lispy().eval()
 #except Exception as e:
 #	print "err: " + str(e)
-print lispy

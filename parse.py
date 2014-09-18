@@ -3,10 +3,8 @@
 import tok, ast, copy
 
 class Parse(object):
-	def __init__(self, ls):
-		self.root = ast.Ast(None)
-		self.list = copy.copy(ls) # shallow copy
-		self.list.reverse()
+	def __init__(self, lexer):
+		self.lexer = lexer
 		self.paren_depth = 0
 
 	def __list_pop(self):
@@ -16,6 +14,9 @@ class Parse(object):
 			return None
 
 	def parse(self):
+		self.root = ast.Ast(None)
+		self.list = self.lexer.lex()
+		self.list.reverse()
 		while len(self.list) > 0:
 			self.parse_list(self.root)
 		return self.root

@@ -8,13 +8,20 @@ def give_context(otree, ntree, index):
 	return ntree
 
 class Eval(object):
-	def __init__(self, tree):
-		self.tree = tree
+	def __init__(self, parser):
+		self.parser = parser
 		self.vars = Scope()
 		self.builtins = Builtins(self)
 
-	def eval(self):
-		return self.active_eval(self.tree, self.vars)
+	def __iter__(self):
+		return self
+
+	def next(self):
+		self.tree = self.parser.parse()
+		if len(self.tree.child) > 0:
+			return self.active_eval(self.tree, self.vars)
+		else:
+			raise StopIteration()
 
 	def active_eval(self, tree, scope):
 		if tree.data == None:
@@ -47,7 +54,8 @@ class Eval(object):
 				else:
 					return self.builtins.eval(tree, scope)
 			else:
-				return recurse(give_context(tree, scope.in_var(tree.data.string).tree, 0), scope)
+				v = give_context(tree, scope.in_var(tree.data.string).tree, 0)
+				return recurse(v, scope)
 
 		# numbers eval to themselves
 		elif typ == "n":
@@ -188,14 +196,14 @@ class Builtins(object):
 		return tree.child[1]
 	def eval_mul(self, tree, scope):
 		for i in range(1, len(tree.child)):
-				tree.child[i] = self.ev._Eval__eval(tree.child[i], scope)
+				tree.child[i] = self.ev.active_eval(tree.child[i], scope)
 		if len(tree.child) != 3:
 			raise Exception("incorrect number of args for mul")
 		tree.child[1].data.string *= tree.child[2].data.string
 		return tree.child[1]
 	def eval_div(self, tree, scope):
 		for i in range(1, len(tree.child)):
-				tree.child[i] = self.ev._Eval__eval(tree.child[i], scope)
+				tree.child[i] = self.ev.active_eval(tree.child[i], scope)
 		if len(tree.child) != 3:
 			raise Exception("incorrect number of args for div")
 		tree.child[1].data.string /= tree.child[2].data.string
