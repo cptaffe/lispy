@@ -1,6 +1,6 @@
 # lexes scanned characters into tokens
 
-import scan, tok
+import tok
 
 class Lex(object):
 	def __init__(self, scan):
@@ -35,7 +35,8 @@ class Lex(object):
 		while True:
 			if not self.lex_id():
 				if not self.lex_num():
-					break
+					if not self.lex_str():
+						break
 			self.lex_space()
 
 	def lex_id(self):
@@ -62,6 +63,18 @@ class Lex(object):
 		if sc.len() == 0:
 			return False
 		self.list.append(tok.Tok("n", sc.emit()))
+		return True
+	def lex_str(self):
+		sc = self.scan
+		sc.next()
+		if sc.get() == '"':
+			while sc.next():
+				if sc.get() == '"':
+					break
+		else:
+			sc.backup()
+			return False
+		self.list.append(tok.Tok("str", sc.emit()[1:-1]))
 		return True
 	def lex_space(self):
 		sc = self.scan

@@ -24,6 +24,7 @@ types = [
 "ls", # list
 "id", # identifier
 "n", # number
+"str", #string
 ]
 
 class AstTyp(object):

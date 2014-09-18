@@ -11,11 +11,7 @@ class lispy(object):
 			f = sys.stdin
 		else:
 			f = codecs.open(self.fn, encoding='utf-8')
-		#try:
 		p = parse.Parse(lex.Lex(scan.Scan(f)))
-		#except Exception as e:
-		#	raise Exception(str(e) + "; on this stream: \n" + str(l))
-		#try:
 		for t in optim.Eval(p):
 			print pprint.pprint(t).pprint()
 		return self

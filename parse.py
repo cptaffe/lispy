@@ -47,7 +47,7 @@ class Parse(object):
 			if typ_str in ["bp", "ep"]:
 				self.list.append(t) # push back on list
 				return self.parse_list(tree)
-			elif typ_str in ["id", "n"]:
+			elif typ_str in ["id", "n", "str"]:
 				if typ_str == "n":
 					t.string = int(t.string)
 				tree.add(ast.Ast(self.tok_to_ast(t)))
