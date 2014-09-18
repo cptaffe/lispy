@@ -25,6 +25,8 @@ class pprint(object):
 				self.string += "\x1b[32;1m" + str(tree.data.string) + "\x1b[0m"
 			elif typ == "n":
 				self.string += "\x1b[31;1m" + str(tree.data.string) + "\x1b[0m"
+			elif typ == "str":
+				self.string += "\x1b[33;1m" + '"' + str(tree.data.string) + '"' + "\x1b[0m"
 	def __pprint_child(self, ls, sep):
 		return self.__pprint_inactive_child(ls, sep, 0)
 	def __pprint_inactive_child(self, ls, sep, x):

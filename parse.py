@@ -3,10 +3,8 @@
 import tok, ast, copy
 
 class Parse(object):
-	def __init__(self, ls):
-		self.root = ast.Ast(None)
-		self.list = copy.copy(ls) # shallow copy
-		self.list.reverse()
+	def __init__(self, lexer):
+		self.lexer = lexer
 		self.paren_depth = 0
 
 	def __list_pop(self):
@@ -16,6 +14,9 @@ class Parse(object):
 			return None
 
 	def parse(self):
+		self.root = ast.Ast(None)
+		self.list = self.lexer.lex()
+		self.list.reverse()
 		while len(self.list) > 0:
 			self.parse_list(self.root)
 		return self.root
@@ -46,7 +47,7 @@ class Parse(object):
 			if typ_str in ["bp", "ep"]:
 				self.list.append(t) # push back on list
 				return self.parse_list(tree)
-			elif typ_str in ["id", "n"]:
+			elif typ_str in ["id", "n", "str"]:
 				if typ_str == "n":
 					t.string = int(t.string)
 				tree.add(ast.Ast(self.tok_to_ast(t)))

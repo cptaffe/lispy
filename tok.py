@@ -5,6 +5,7 @@ types = [
 "ex", # exclamation (!)
 "bp", # beginning paren
 "ep", # ending paren
+"str", # string
 "id", # identifier
 "n", # number
 ]

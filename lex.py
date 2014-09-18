@@ -1,6 +1,6 @@
 # lexes scanned characters into tokens
 
-import scan, tok
+import tok
 
 class Lex(object):
 	def __init__(self, scan):
@@ -10,6 +10,7 @@ class Lex(object):
 
 	def lex(self):
 		sc = self.scan
+		self.list = [] # reset on every call
 		while sc.next():
 			if sc.get() == '(':
 				self.list.append(tok.Tok("bp", sc.emit()))
@@ -22,6 +23,8 @@ class Lex(object):
 					self.lex_list()
 				elif self.parenDepth < 0:
 					raise Exception("too many end parens")
+				else:
+					return self.list
 			else:
 				sc.emit() # dump
 		return self.list
@@ -32,7 +35,8 @@ class Lex(object):
 		while True:
 			if not self.lex_id():
 				if not self.lex_num():
-					break
+					if not self.lex_str():
+						break
 			self.lex_space()
 
 	def lex_id(self):
@@ -60,6 +64,18 @@ class Lex(object):
 			return False
 		self.list.append(tok.Tok("n", sc.emit()))
 		return True
+	def lex_str(self):
+		sc = self.scan
+		sc.next()
+		if sc.get() == '"':
+			while sc.next():
+				if sc.get() == '"':
+					break
+		else:
+			sc.backup()
+			return False
+		self.list.append(tok.Tok("str", sc.emit()[1:-1]))
+		return True
 	def lex_space(self):
 		sc = self.scan
 		while sc.next():
@@ -68,6 +84,6 @@ class Lex(object):
 				break
 		sc.emit() # dump
 	def is_space(self, c):
-		return c in [' ', '\t']
+		return c in [' ', '\t', '\n']
 	def is_symb(self, c):
 		return c in [':', '!', '`', '~', '@', '#', '$', '%', '^', '&', '*', '+', '-', '=', '>', '<', '/', '{', '}', '[', ']', '.']
