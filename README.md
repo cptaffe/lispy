@@ -13,3 +13,5 @@ Note: this uses pypy, so if you don't have pypy, you can either edit the shebang
 ```sh
 python lispy
 ```
+
+For more info, check the [wiki](/wiki)
