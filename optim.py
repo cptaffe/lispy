@@ -2,6 +2,8 @@
 
 import copy, ast
 
+path = "/home/cpt/dev/lispy/"
+
 def give_context(otree, ntree, index):
 	ntree.parent = otree.parent
 	otree.parent.child[index] = ntree
@@ -280,7 +282,7 @@ class Builtins(object):
 			raise Exception("incorrect number of args for import")
 		import codecs, lex, parse, scan
 		# get file
-		f = codecs.open(tree.child[1].data.string.replace(':', '/') + '.lsp', encoding='utf-8')
+		f = codecs.open(path + tree.child[1].data.string.replace(':', '/') + '.lsp', encoding='utf-8')
 		oldp = self.ev.parser
 		newp = parse.Parse(lex.Lex(scan.Scan(f)))
 		self.ev.parser = newp
