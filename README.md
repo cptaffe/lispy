@@ -14,4 +14,4 @@ Note: this uses pypy, so if you don't have pypy, you can either edit the shebang
 python lispy
 ```
 
-For more info, check the [wiki](/wiki)
+For more info, check the [wiki](https://github.com/cptaffe/lispy/wiki)
