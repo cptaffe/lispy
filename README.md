@@ -13,11 +13,3 @@ Note: this uses pypy, so if you don't have pypy, you can either edit the shebang
 ```sh
 python lispy
 ```
-You can route files through stdin or whatever.
-
-## Test with input.lsp
-
-To test the compiler using input.lsp or whatevs, do:
-```sh
-./lispy < input.lsp
-```
