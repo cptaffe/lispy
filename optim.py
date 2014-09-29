@@ -1,8 +1,12 @@
 # optimizer for code
 
-import copy, ast
+import copy, ast, tok
 
-path = "/home/cpt/dev/lispy/"
+path = "/Users/cptaffe/Documents/git/lispy/"
+
+def err(tree, st):
+	import pprint
+	raise Exception(str(pprint.pprint(tree).pprint()) + ": " + st)
 
 def give_context(otree, ntree, index):
 	ntree.parent = otree.parent
@@ -15,8 +19,8 @@ class Eval(object):
 		self.vars = Scope()
 		self.builtins = Builtins(self)
 		import ast
-		self.vars.add(Var("#t", ast.Ast(ast.AstNode("n", 1))))
-		self.vars.add(Var("#f", ast.Ast(ast.AstNode("n", 0))))
+		self.vars.add(Var("#t", ast.Ast(tok.Tok("n", 1))))
+		self.vars.add(Var("#f", ast.Ast(tok.Tok("n", 0))))
 
 	def __iter__(self):
 		return self
@@ -168,6 +172,10 @@ class Builtins(object):
 			return False
 		else:
 			return True
+	def check_arg(self, tree, num):
+		tnum = len(tree.child)
+		if tnum != num:
+			err(tree, "arg mismatch " + str(tnum) + " for " + str(num))
 	def eval(self, tree, scope):
 		return self.builtins[tree.data.string](tree.get_parent(), scope)
 	def eval_push(self, tree, scope):
@@ -189,8 +197,7 @@ class Builtins(object):
 			raise Exception("cannot pop from non-list")
 		return ls.child.pop()
 	def eval_assign(self, tree, scope):
-		if len(tree.child) != 3:
-			raise Exception("incorrect number of args for assign")
+		self.check_arg(tree, 3)
 		if repr(tree.child[1].data.typ) == "id":
 			name = tree.child[1].data.string
 			tr = tree.child[2]
@@ -212,35 +219,30 @@ class Builtins(object):
 	def eval_add(self, tree, scope):
 		for i in range(1, len(tree.child)):
 				tree.child[i] = self.ev.eval_loop(self.ev.active_eval, (tree.child[i], scope))
-		if len(tree.child) != 3:
-			raise Exception("incorrect number of args for add")
+		self.check_arg(tree, 3)
 		tree.child[1].data.string += tree.child[2].data.string
 		return tree.child[1]
 	def eval_sub(self, tree, scope):
 		for i in range(1, len(tree.child)):
 				tree.child[i] = self.ev.eval_loop(self.ev.active_eval, (tree.child[i], scope))
-		if len(tree.child) != 3:
-			raise Exception("incorrect number of args for sub")
+		self.check_arg(tree, 3)
 		tree.child[1].data.string -= tree.child[2].data.string
 		return tree.child[1]
 	def eval_mul(self, tree, scope):
 		for i in range(1, len(tree.child)):
 				tree.child[i] = self.ev.eval_loop(self.ev.active_eval, (tree.child[i], scope))
-		if len(tree.child) != 3:
-			raise Exception("incorrect number of args for mul")
+		self.check_arg(tree, 3)
 		tree.child[1].data.string *= tree.child[2].data.string
 		return tree.child[1]
 	def eval_div(self, tree, scope):
 		for i in range(1, len(tree.child)):
 				tree.child[i] = self.ev.eval_loop(self.ev.active_eval, (tree.child[i], scope))
-		if len(tree.child) != 3:
-			raise Exception("incorrect number of args for div")
+		self.check_arg(3)
 		tree.child[1].data.string /= tree.child[2].data.string
 		return tree.child[1]
 	def eval_lambda(self, tree, scope):
 		sc = Scope()
-		if len(tree.child) != 3:
-			raise Exception("incorrect number of args for lambda")
+		self.check_arg(tree, 3)
 		tree = tree.get_parent()
 		scope.add_child(sc) # add global scope to this scope
 		lam_tree = tree.child[0]
@@ -265,15 +267,13 @@ class Builtins(object):
 	def eval_negate(self, tree, scope):
 		for i in range(1, len(tree.child)):
 				tree.child[i] = self.ev.eval_loop(self.ev.active_eval, (tree.child[i], scope))
-		if len(tree.child) != 2:
-			raise Exception("incorrect number of args for negate")
+		self.check_arg(tree, 2)
 		tree.child[1].data.string = 0 - tree.child[1].data.string
 		return tree.child[1]
 	def eval_equate(self, tree, scope):
 		for i in range(1, len(tree.child)):
 				tree.child[i] = self.ev.eval_loop(self.ev.active_eval, (tree.child[i], scope))
-		if len(tree.child) != 3:
-			raise Exception("incorrect number of args for equate")
+		self.check_arg(tree, 3)
 		b = tree.child[1].data.string == tree.child[2].data.string
 		import ast
 		if b:
@@ -282,15 +282,13 @@ class Builtins(object):
 			tree.child[1] = ast.Ast(ast.AstNode("id", "#f"))
 		return tree.child[1]
 	def eval_if(self, tree, scope):
-		if len(tree.child) != 4:
-			raise Exception("incorrect number of args for if")
+		self.check_arg(tree, 4)
 		if self.ev.eval_loop(self.ev.active_eval, (tree.child[1], scope)).data.string == 1:
 			return self.ev.eval_loop(self.ev.active_eval, (tree.child[2], scope))
 		else:
 			return self.ev.active_eval(tree.child[3], scope)
 	def eval_import(self, tree, scope):
-		if len(tree.child) != 2:
-			raise Exception("incorrect number of args for import")
+		self.check_arg(tree, 2)
 		import codecs, lex, parse, scan
 		# get file
 		f = codecs.open(path + tree.child[1].data.string.replace(':', '/') + '.lsp', encoding='utf-8')

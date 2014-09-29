@@ -17,31 +17,3 @@ class Ast(object):
 		return self.parent
 	def __repr__(self):
 		return str(self.data) + str(self.child)
-
-# ast node 
-
-types = [
-"ls", # list
-"id", # identifier
-"n", # number
-"str", #string
-]
-
-class AstTyp(object):
-	def __init__(self, typ):
-		# fucked up enum type deal
-		self.typ = types.index(typ)
-		# define specifics of each type
-	def __repr__(self):
-		return types[self.typ]
-
-class AstNode(object):
-	def __init__(self, typ, string=None):
-		self.typ = AstTyp(typ)
-		self.string = string
-	def __repr__(self):
-		if self.string != None:
-			string = "(" + repr(self.typ) + ":\"" + str(self.string) + "\")"
-		else:
-			string = "(" + repr(self.typ) + ")"
-		return string

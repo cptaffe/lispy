@@ -27,7 +27,7 @@ class Parse(object):
 		typ_str = tok.types[t.typ.typ]
 		if typ_str == "bp":
 			self.paren_depth += 1
-			return self.parse_in_list(tree.add(ast.Ast(ast.AstNode("ls"))))
+			return self.parse_in_list(tree.add(ast.Ast(tok.Tok("ls"))))
 		elif typ_str == "ep":
 			self.paren_depth -= 1
 			if self.paren_depth < 0:
@@ -50,8 +50,6 @@ class Parse(object):
 			elif typ_str in ["id", "n", "str"]:
 				if typ_str == "n":
 					t.string = int(t.string)
-				tree.add(ast.Ast(self.tok_to_ast(t)))
+				tree.add(ast.Ast(t))
 			else:
 				raise Exception("unrecognized token")
-	def tok_to_ast(self, t):
-		return ast.AstNode(tok.types[t.typ.typ], t.string)

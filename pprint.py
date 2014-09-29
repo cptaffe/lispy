@@ -1,11 +1,12 @@
 # pretty prints trees in lisp-paren like notation
 
-import ast
+import tok
 
 class pprint(object):
-	def __init__(self, tree):
+	def __init__(self, tree, color=False):
 		self.tree = tree
 		self.string = ""
+		self.color = color
 	
 	def pprint(self):
 		self.__pprint(self.tree)
@@ -16,17 +17,26 @@ class pprint(object):
 		elif tree.data == None:
 			self.__pprint_child(tree.child, "\n")
 		else:
-			typ = ast.types[tree.data.typ.typ]
+			typ = tok.types[tree.data.typ.typ]
 			if typ == "ls":
 				self.string += "("
 				self.__pprint_active_child(tree.child, " ")
 				self.string += ")"
 			elif typ == "id":
-				self.string += "\x1b[32;1m" + str(tree.data.string) + "\x1b[0m"
+				if self.color:
+					self.string += "\x1b[32;1m" + str(tree.data.string) + "\x1b[0m"
+				else:
+					self.string += str(tree.data.string)
 			elif typ == "n":
-				self.string += "\x1b[31;1m" + str(tree.data.string) + "\x1b[0m"
+				if self.color:
+					self.string += "\x1b[31;1m" + str(tree.data.string) + "\x1b[0m"
+				else:
+					self.string += str(tree.data.string)
 			elif typ == "str":
-				self.string += "\x1b[33;1m" + '"' + str(tree.data.string) + '"' + "\x1b[0m"
+				if self.color:
+					self.string += "\x1b[33;1m" + '"' + str(tree.data.string) + '"' + "\x1b[0m"
+				else:
+					self.string += '"' + str(tree.data.string) + '"'
 	def __pprint_child(self, ls, sep):
 		return self.__pprint_inactive_child(ls, sep, 0)
 	def __pprint_inactive_child(self, ls, sep, x):
@@ -39,9 +49,12 @@ class pprint(object):
 			self.string += "none"
 			return
 		x = 0
-		if ls[0] != None and ast.types[ls[0].data.typ.typ] == "id":
+		if ls[0] != None and tok.types[ls[0].data.typ.typ] == "id":
 			x = 1
-			self.string += "\x1b[36;1m" + ls[0].data.string + "\x1b[0m"
+			if self.color:
+				self.string += "\x1b[36;1m" + ls[0].data.string + "\x1b[0m"
+			else:
+				self.string += ls[0].data.string
 			if len(ls) > 1:
 				self.string += sep
 		return self.__pprint_inactive_child(ls, sep, x)

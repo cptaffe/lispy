@@ -3,9 +3,10 @@
 import lex, parse, optim, scan, pprint, codecs, sys
 
 class lispy(object):
-	def __init__(self, fn=None):
+	def __init__(self, fn=None, color=False):
 		self.fn = fn
 		self.evald = ""
+		self.color = color
 	def eval(self):
 		if self.fn == None:
 			f = sys.stdin
@@ -14,7 +15,7 @@ class lispy(object):
 		p = parse.Parse(lex.Lex(scan.Scan(f)))
 		for t in lispy_eval(p):
 			if not t == None:
-				print pprint.pprint(t).pprint()
+				print pprint.pprint(t, self.color).pprint()
 		return self
 
 # error catching iterator
@@ -24,10 +25,10 @@ class lispy_eval(object):
 	def __iter__(self):
 		return self
 	def next(self):
-		try:
+		#try:
 			return self.eval.next()
-		except Exception as e:
+		#except Exception as e:
 			# EOF
-			if len(str(e)) == 0:
-				exit()
-			print "err: " + str(e)
+		#	if len(str(e)) == 0:
+		#		exit()
+		#	print "err: " + str(e)

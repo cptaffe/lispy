@@ -1,10 +1,9 @@
 # token class 
 
 types = [
-"bt", # backtick
-"ex", # exclamation (!)
 "bp", # beginning paren
 "ep", # ending paren
+"ls", # list
 "str", # string
 "id", # identifier
 "n", # number
@@ -19,7 +18,7 @@ class TokTyp(object):
 		return types[self.typ]
 
 class Tok(object):
-	def __init__(self, typ, string):
+	def __init__(self, typ, string=""):
 		self.typ = TokTyp(typ)
 		self.string = string
 	def __repr__(self):
