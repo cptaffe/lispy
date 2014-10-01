@@ -25,10 +25,10 @@ class lispy_eval(object):
 	def __iter__(self):
 		return self
 	def next(self):
-		#try:
+		try:
 			return self.eval.next()
-		#except Exception as e:
+		except Exception as e:
 			# EOF
-		#	if len(str(e)) == 0:
-		#		exit()
-		#	print "err: " + str(e)
+			if len(str(e)) == 0:
+				exit()
+			print >> sys.stderr, str(e) # print to stderr

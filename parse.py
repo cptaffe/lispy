@@ -27,7 +27,7 @@ class Parse(object):
 		typ_str = tok.types[t.typ.typ]
 		if typ_str == "bp":
 			self.paren_depth += 1
-			return self.parse_in_list(tree.add(ast.Ast(tok.Tok("ls"))))
+			return self.parse_in_list(tree.add(ast.Ast(tok.Tok("ls", pos=t.pos))))
 		elif typ_str == "ep":
 			self.paren_depth -= 1
 			if self.paren_depth < 0:

@@ -3,7 +3,7 @@
 import lis, sys
 
 # print version and stuff
-print "Basilisk v 0.4"
+# print "Basilisk v 0.4"
 
 # color option
 # catch-all for errors
@@ -12,11 +12,11 @@ if len(sys.argv) == 2:
 		try:
 			lis.lispy(color=True).eval()
 		except Exception as e:
-			print "err: " + str(e)
+			print >> sys.stderr, str(e) # print to stderr
 	else:
 		print "invalid flag"
 else:
 	try:
 		lis.lispy().eval()
 	except Exception as e:
-		print "err: " + str(e)
+		print >> sys.stderr, str(e) # print to stderr

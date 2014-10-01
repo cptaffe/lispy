@@ -46,8 +46,7 @@ class pprint(object):
 					self.string += sep
 	def __pprint_active_child(self, ls, sep):
 		if len(ls) == 0:
-			self.string += "none"
-			return
+			return # empty
 		x = 0
 		if ls[0] != None and tok.types[ls[0].data.typ.typ] == "id":
 			x = 1

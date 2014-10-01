@@ -9,5 +9,6 @@ class SyntAn(object):
 		else:
 			raise Exception("tree not of type ast.Ast")
 
-	# short for analyze (loolooloolooloo)
+	# short for analyze
 	def anal():
+		print "trollolololol"

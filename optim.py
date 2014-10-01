@@ -1,12 +1,8 @@
 # optimizer for code
 
-import copy, ast, tok
+import copy, ast, tok, err
 
 path = "/Users/cptaffe/Documents/git/lispy/"
-
-def err(tree, st):
-	import pprint
-	raise Exception(str(pprint.pprint(tree).pprint()) + ": " + st)
 
 def give_context(otree, ntree, index):
 	ntree.parent = otree.parent
@@ -69,7 +65,7 @@ class Eval(object):
 		if typ == "id":
 			if not scope.is_in_var(tree.data.string):
 				if not self.builtins.check(tree):
-					raise Exception("undefined " + "'" + tree.data.string + "'")
+					err.Err("undefined " + "'" + tree.data.string + "'", tree=tree).err()
 				else:
 					return self.builtins.eval, (tree, scope)
 			else:
@@ -80,7 +76,7 @@ class Eval(object):
 		elif typ in ["n", "str"]:
 			return tree # leave alone
 		else:
-			raise Exception("unknown type in tree")
+			err.Err("unknown type in tree", tree=tree).err()
 
 	def eval_subs(self, tree, scope, recurse):
 		for i in range(0, len(tree.child)):
@@ -172,10 +168,11 @@ class Builtins(object):
 			return False
 		else:
 			return True
+	# checks arguments, given vs. taken
 	def check_arg(self, tree, num):
 		tnum = len(tree.child)
 		if tnum != num:
-			err(tree, "arg mismatch " + str(tnum) + " for " + str(num))
+			err.Err("arg mismatch " + str(tnum-1) + " for " + str(num-1), tree=tree).err()
 	def eval(self, tree, scope):
 		return self.builtins[tree.data.string](tree.get_parent(), scope)
 	def eval_push(self, tree, scope):
@@ -184,7 +181,7 @@ class Builtins(object):
 				tree.child[i] = self.ev.eval_loop(self.ev.active_eval, (tree.child[i], scope))
 		ls = tree.child[1]
 		if not repr(ls.data.typ) == "ls":
-			raise Exception("cannot push to non-list")
+			err.Err("cannot push to non-list", tree=tree).err()
 		for i in range(2, len(tree.child)):
 			ls.child.append(tree.child[i])
 		return ls
@@ -194,7 +191,7 @@ class Builtins(object):
 				tree.child[i] = self.ev.eval_loop(self.ev.active_eval, (tree.child[i], scope))
 		ls = tree.child[1]
 		if not repr(ls.data.typ) in ["ls", "il"]:
-			raise Exception("cannot pop from non-list")
+			err.Err("cannot pop from non-list", tree=tree).err()
 		return ls.child.pop()
 	def eval_assign(self, tree, scope):
 		self.check_arg(tree, 3)
@@ -211,7 +208,7 @@ class Builtins(object):
 					tr = copy.deepcopy(tree.child[2].child[-1])
 				scope.add(Var(name, tr))
 		else:
-			raise Exception("cannot assign to non-var")
+			err.Err("cannot assign to non-var", tree=tree).err()
 		return tree.child[1]
 	def eval_eval(self, tree, scope):
 		# double eval
@@ -237,7 +234,7 @@ class Builtins(object):
 	def eval_div(self, tree, scope):
 		for i in range(1, len(tree.child)):
 				tree.child[i] = self.ev.eval_loop(self.ev.active_eval, (tree.child[i], scope))
-		self.check_arg(3)
+		self.check_arg(tree, 3)
 		tree.child[1].data.string /= tree.child[2].data.string
 		return tree.child[1]
 	def eval_lambda(self, tree, scope):
