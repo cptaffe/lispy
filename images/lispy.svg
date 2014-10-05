@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="lispy.svg">
+  <defs
+     id="defs4">
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect2989"
+       is_visible="true" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="2.99"
+     inkscape:cx="473.36891"
+     inkscape:cy="657.18205"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1026"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g3921">
+      <g
+         id="g3841"
+         transform="matrix(1.2117271,0,0,1.2117271,-68.087022,-71.392578)"
+         inkscape:export-filename="/home/cpt/dev/pres/images/google_developers_icon_128.png"
+         inkscape:export-xdpi="90"
+         inkscape:export-ydpi="90">
+        <text
+           xml:space="preserve"
+           style="font-size:89.70909882px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#b3b3b3;fill-opacity:1;stroke:none;font-family:Sans"
+           x="313.83432"
+           y="424.56079"
+           id="text2991"
+           sodipodi:linespacing="125%"
+           inkscape:export-filename="/home/cpt/dev/pres/images/google_developers_icon_128.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90"><tspan
+             sodipodi:role="line"
+             id="tspan2993"
+             x="313.83432"
+             y="424.56079"
+             style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;fill:#b3b3b3;fill-opacity:1;font-family:Ubuntu;-inkscape-font-specification:Ubuntu Medium">(</tspan></text>
+        <text
+           sodipodi:linespacing="125%"
+           id="text2995"
+           y="424.13834"
+           x="402.51364"
+           style="font-size:89.70909882px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#b3b3b3;fill-opacity:1;stroke:none;font-family:Sans"
+           xml:space="preserve"
+           inkscape:export-filename="/home/cpt/dev/pres/images/google_developers_icon_128.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;fill:#b3b3b3;fill-opacity:1;font-family:Ubuntu;-inkscape-font-specification:Ubuntu Medium"
+             y="424.13834"
+             x="402.51364"
+             id="tspan2997"
+             sodipodi:role="line">)</tspan></text>
+        <g
+           style="font-size:89.70909882px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#666666;fill-opacity:1;stroke:none;font-family:Sans"
+           id="text2999"
+           transform="translate(-1.8280521,0)">
+          <path
+             id="path3850"
+             transform="matrix(0.82526833,0,0,0.82526833,58.018115,58.918034)"
+             d="M 367.78125 372 L 358.6875 373.59375 L 358.6875 434.625 C 358.68749 439.45142 359.83952 443.02974 362.1875 445.3125 C 364.53547 447.59526 368.45342 448.99456 374.0625 449.125 C 379.49026 449.358 385.4555 449.62319 389.875 449.21875 C 396.0389 448.63268 401.29321 448.0382 404.75 445.625 C 408.27194 443.2118 410.03122 439.63348 410.03125 434.9375 C 410.03122 432.52432 409.68615 430.53681 408.96875 428.90625 C 408.25127 427.2105 407.18212 425.76776 405.8125 424.59375 C 404.50803 423.41978 402.92265 422.37916 401.03125 421.53125 C 399.13978 420.61817 396.97568 419.72563 394.5625 418.8125 C 392.73626 418.16031 391.17941 417.55577 389.875 416.96875 C 388.57055 416.38177 387.44435 415.746 386.53125 415.09375 C 385.68335 414.37635 385.05029 413.59791 384.59375 412.75 C 384.20241 411.90215 383.99999 410.92131 384 409.8125 C 383.99999 407.66022 384.9523 406.07211 386.84375 405.09375 C 388.73516 404.05025 390.92508 403.56253 393.46875 403.5625 C 396.4037 403.56253 398.94412 403.81931 401.03125 404.40625 C 402.73273 404.70196 403.52925 405.46309 405.125 405.875 C 405.69522 406.07763 406.77867 406.26113 407.375 406.34375 C 407.90018 406.41655 408.44626 406.4026 408.96875 406.3125 C 409.37901 406.2418 409.79721 406.11699 410.15625 405.90625 C 410.24405 405.85471 410.32189 405.77728 410.40625 405.71875 C 411.43237 406.39359 412.50733 406.82182 413.65625 406.96875 C 415.15543 406.92965 416.20344 406.09565 417 405.09375 C 417.60866 404.32818 417.64016 403.23907 417.84375 402.28125 C 417.58106 403.00817 417.03886 404.55789 416.71875 404.78125 C 417.11442 403.5322 416.72841 402.58008 416.21875 401.375 C 416.21875 401.375 416.88282 403.8637 416.28125 404.875 C 415.82113 405.64856 414.86126 406.10323 413.875 406.15625 C 412.77597 406.21531 411.89213 405.64527 411.125 405.0625 C 411.13722 405.04454 411.14459 405.01835 411.15625 405 C 411.4059 404.60694 411.53275 404.11787 411.59375 403.65625 C 411.63925 403.31175 411.61605 402.96201 411.53125 402.625 C 411.39186 402.07079 411.11287 401.55916 410.78125 401.09375 C 410.05125 400.08619 409.12911 399.17921 408.0625 398.53125 C 407.85745 398.40668 407.57054 398.30278 407.28125 398.1875 L 407.28125 398.15625 C 407.26565 398.15025 407.23485 398.16225 407.21875 398.15625 C 406.52951 397.8745 405.7874 397.67755 405.125 397.5 C 403.97443 397.18342 402.78561 396.93682 401.8125 396.78125 C 400.57326 396.52042 399.21609 396.34924 397.78125 396.21875 C 396.34633 396.02316 394.90359 395.90629 393.46875 395.90625 C 387.72921 395.90629 383.23254 397.26346 379.90625 399.9375 C 376.57993 402.54643 374.90625 406.09348 374.90625 410.59375 C 374.90625 412.87654 375.27984 414.77845 376.0625 416.34375 C 376.84515 417.9091 377.9143 419.26627 379.21875 420.375 C 380.52317 421.48381 382.0515 422.46465 383.8125 423.3125 C 385.6387 424.09519 387.51208 424.87361 389.46875 425.65625 C 393.51247 427.28681 396.42648 428.75808 398.1875 430.0625 C 399.94845 431.36695 400.81247 433.12621 400.8125 435.34375 C 400.81247 437.49608 399.91993 439.05294 398.09375 440.03125 C 396.33273 441.00959 393.59261 441.50001 389.875 441.5 C 385.05914 441.86566 378.96988 441.68901 375.375 441.28125 C 374.15446 441.09837 372.89873 440.87997 371.8125 440.59375 C 370.83416 440.26765 370.02448 439.80576 369.4375 439.21875 C 368.85048 438.63176 368.44838 437.82209 368.1875 436.84375 C 367.92659 435.86543 367.78123 434.65636 367.78125 433.15625 L 367.78125 372 z M 403.4375 400.03125 L 405.25 400.84375 C 405.25 400.84375 405.2949 401.20159 405.25 401.375 C 405.19557 401.58505 405.10707 401.80212 404.9375 401.9375 C 404.73162 402.10189 404.41742 402.19075 404.15625 402.15625 C 403.87496 402.11905 403.65753 401.8979 403.4375 401.71875 C 403.26983 401.58224 403.0576 401.45838 403 401.25 C 402.91954 400.95917 403.06447 400.65053 403.1875 400.375 C 403.24594 400.24412 403.4375 400.03125 403.4375 400.03125 z "
+             style="font-size:80.7381897px;font-variant:normal;font-stretch:normal;fill:#666666;font-family:Ubuntu;-inkscape-font-specification:Ubuntu" />
+        </g>
+      </g>
+    </g>
+    <rect
+       style="fill:none"
+       id="rect3071"
+       width="128"
+       height="128"
+       x="320.34726"
+       y="346.30112"
+       inkscape:export-filename="/home/cpt/dev/pres/images/google_developers_icon_128.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#666666;fill-opacity:1;stroke:none;font-family:Sans"
+       x="491.27518"
+       y="424.41312"
+       id="text3900"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3902"
+         x="491.27518"
+         y="424.41312"
+         style="font-size:48px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#666666;fill-opacity:1;font-family:Ubuntu;-inkscape-font-specification:Ubuntu">lispy</tspan></text>
+  </g>
+</svg>
