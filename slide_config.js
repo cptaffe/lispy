@@ -23,9 +23,9 @@ var SLIDE_CONFIG = {
   // Author information
   presenters: [{
     name: 'Connor Taffe',
-    //company: 'Job Title<br>Google',
-    gplus: 'http://plus.google.com/109621489651016521466/',
-    twitter: '@cptaffe',
+    // company: 'Job Title<br>Google',
+    // gplus: 'http://plus.google.com/109621489651016521466/',
+    // twitter: '@cptaffe',
     www: 'http://byteflame.org',
     github: 'http://github.com/cptaffe'
   }/*, {

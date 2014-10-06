@@ -156,7 +156,7 @@ Lazy evaluation is the practice of storing the unevalutated tree in memory (the 
 	(a) # => 2
 </pre>
 
-When a is assigned, it is stored as (+1 b), which is evaluated on lines 1 and 3.
+When a is assigned, it is stored as (+1 b), which is evaluated on lines 2 and 4.
 
 ---
 
@@ -168,10 +168,11 @@ Lambdas are the way functions are done in lispy, they get their own scope and ar
 Since all data is immutable, a lambda is reevaluated every time you call it.
 
 <pre class="prettyprint" data-lang="lisp">
+	# example of scoping
 	(def func
 		(lambda ()
 			(def a 2))) # => func
-	(dev a 4) # => a
+	(def a 4) # => a
 	(func) # => a
 	(a) # => 4
 </pre>
@@ -193,55 +194,38 @@ Within the scope of a lambda, a variable called self is set with the value of it
 
 ---
 
-title: Today
-class: nobackground fill
+title: Statement based execution
+subtitle: overview
 
-![Many kinds of devices.](image.png)
+Statement based execution is a pretty neat way to interact with the interpreter. It's based on the standard REPL idea (read, evaluate, print), but intelligently.
 
-<footer class="source">source: place source info here</footer>
+Lispy's evaluation module calls the parser, which calls the lexer for new tokens, which returns when a full statement has been entered.
 
----
+It also uses a pretty printer to print output in the syntax used for input.
 
-title: Big Title Slide
-class: title-slide
-
----
-
-title: Code Example
-
-Media Queries are sweet:
-
-<pre class="prettyprint" data-lang="css">
-@media screen and (max-width: 640px) {
-  #sidebar { display: none; }
-}
+<pre class="prettyprint" data-lang="lisp">
+	(+ 1 2)
+	3
+	(+
+	2 3)
+	5
+	(noeval (+ 1 2))
+	(+ 1 2) # tree is returned, pretty printed
 </pre>
 
 ---
 
-title: Once more, with JavaScript
+title: REPL utility
+subtitle: usage
 
-<pre class="prettyprint" data-lang="javascript">
-function isSmall() {
-  return window.matchMedia("(min-device-width: ???)").matches;
-}
+REPL (read, eval, print loop) is a style of interpreter I use.
 
-function hasTouch() {
-  return Modernizr.touch;
-}
-
-function detectFormFactor() {
-  var device = DESKTOP;
-  if (hasTouch()) {
-    device = isSmall() ? PHONE : TABLET;
-  }
-  return device;
-}
-</pre>
-
----
-
-title: Centered content
-content_class: flexbox vcenter
-
-This content should be centered!
+<object width="640" height="390">
+  <param name="movie"
+         value="https://www.youtube.com/v/2f6U5yGRFyk?version=3&autoplay=1&autohide=1&rel=0"></param>
+  <param name="allowScriptAccess" value="always"></param>
+  <embed src="https://www.youtube.com/v/2f6U5yGRFyk?version=3&autoplay=1&autohide=1&rel=0"
+         type="application/x-shockwave-flash"
+         allowscriptaccess="always"
+         width="640" height="390"></embed>
+</object>

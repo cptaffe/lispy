@@ -9,7 +9,7 @@ URL: https://code.google.com/p/io-2012-slides
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Google IO 2012</title>
+  <title>lispy</title>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="chrome=1">
   <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">-->
@@ -29,12 +29,12 @@ URL: https://code.google.com/p/io-2012-slides
 
 <slide class="logoslide nobackground">
   <article class="flexbox vcenter">
-    <span><img src="images/google_developers_logo.png"></span>
+    <span><img src="images/lispy_logo.png"></span>
   </article>
 </slide>
 
 <slide class="title-slide segue nobackground">
-  <aside class="gdbar"><img src="images/google_developers_icon_128.png"></aside>
+  <aside class="gdbar"><img src="images/lispy_icon_128.png"></aside>
   <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
   <hgroup class="auto-fadein">
     <h1 data-config-title><!-- populated from slide_config.json --></h1>
@@ -61,7 +61,7 @@ URL: https://code.google.com/p/io-2012-slides
 
 <slide class="segue dark nobackground" >
   
-    <aside class="gdbar"><img src="images/google_developers_icon_128.png"></aside>
+    <aside class="gdbar"><img src="images/lispy_icon_128.png"></aside>
     <hgroup class="auto-fadein">
       <h2>The Basilisk Language</h2>
       <h3>An Overview</h3>
@@ -128,7 +128,7 @@ URL: https://code.google.com/p/io-2012-slides
 
 <slide class="segue dark nobackground" >
   
-    <aside class="gdbar"><img src="images/google_developers_icon_128.png"></aside>
+    <aside class="gdbar"><img src="images/lispy_icon_128.png"></aside>
     <hgroup class="auto-fadein">
       <h2>Interpreter</h2>
       <h3>How it works</h3>
@@ -206,7 +206,7 @@ URL: https://code.google.com/p/io-2012-slides
 
 <slide class="segue dark nobackground" >
   
-    <aside class="gdbar"><img src="images/google_developers_icon_128.png"></aside>
+    <aside class="gdbar"><img src="images/lispy_icon_128.png"></aside>
     <hgroup class="auto-fadein">
       <h2>lispy</h2>
       <h3>it's pretty awesome</h3>
@@ -229,7 +229,7 @@ URL: https://code.google.com/p/io-2012-slides
     (a) # => 2
 </pre>
 
-<p>When a is assigned, it is stored as (+1 b), which is evaluated on lines 1 and 3.</p></article>
+<p>When a is assigned, it is stored as (+1 b), which is evaluated on lines 2 and 4.</p></article>
  
 </slide>
 
@@ -242,10 +242,11 @@ URL: https://code.google.com/p/io-2012-slides
     <article ><p>Lambdas are the way functions are done in lispy, they get their own scope and are evaluated lazily with input.</p>
 <p>Since all data is immutable, a lambda is reevaluated every time you call it.</p>
 <pre class="prettyprint" data-lang="lisp">
+    # example of scoping
     (def func
         (lambda ()
             (def a 2))) # => func
-    (dev a 4) # => a
+    (def a 4) # => a
     (func) # => a
     (a) # => 4
 </pre></article>
@@ -269,38 +270,23 @@ URL: https://code.google.com/p/io-2012-slides
  
 </slide>
 
-<slide class="nobackground fill" >
-  
-    <hgroup>
-      <h2>Today</h2>
-      <h3></h3>
-    </hgroup>
-    <article ><p><img alt="Many kinds of devices." src="image.png" /></p>
-<footer class="source">source: place source info here</footer></article>
- 
-</slide>
-
-<slide class="title-slide" >
-  
-    <hgroup>
-      <h2>Big Title Slide</h2>
-      <h3></h3>
-    </hgroup>
-    <article ></article>
- 
-</slide>
-
 <slide  >
   
     <hgroup>
-      <h2>Code Example</h2>
-      <h3></h3>
+      <h2>Statement based execution</h2>
+      <h3>overview</h3>
     </hgroup>
-    <article ><p>Media Queries are sweet:</p>
-<pre class="prettyprint" data-lang="css">
-@media screen and (max-width: 640px) {
-  #sidebar { display: none; }
-}
+    <article ><p>Statement based execution is a pretty neat way to interact with the interpreter. It's based on the standard REPL idea (read, evaluate, print), but intelligently.</p>
+<p>Lispy's evaluation module calls the parser, which calls the lexer for new tokens, which returns when a full statement has been entered.</p>
+<p>It also uses a pretty printer to print output in the syntax used for input.</p>
+<pre class="prettyprint" data-lang="lisp">
+    (+ 1 2)
+    3
+    (+
+    2 3)
+    5
+    (noeval (+ 1 2))
+    (+ 1 2) # tree is returned, pretty printed
 </pre></article>
  
 </slide>
@@ -308,45 +294,28 @@ URL: https://code.google.com/p/io-2012-slides
 <slide  >
   
     <hgroup>
-      <h2>Once more, with JavaScript</h2>
-      <h3></h3>
+      <h2>REPL utility</h2>
+      <h3>usage</h3>
     </hgroup>
-    <article ><pre class="prettyprint" data-lang="javascript">
-function isSmall() {
-  return window.matchMedia("(min-device-width: ???)").matches;
-}
-
-function hasTouch() {
-  return Modernizr.touch;
-}
-
-function detectFormFactor() {
-  var device = DESKTOP;
-  if (hasTouch()) {
-    device = isSmall() ? PHONE : TABLET;
-  }
-  return device;
-}
-</pre></article>
- 
-</slide>
-
-<slide  >
-  
-    <hgroup>
-      <h2>Centered content</h2>
-      <h3></h3>
-    </hgroup>
-    <article class="flexbox vcenter"><p>This content should be centered!</p></article>
+    <article ><p>REPL (read, eval, print loop) is a style of interpreter I use.</p>
+<p><object width="640" height="390">
+  <param name="movie"
+         value="https://www.youtube.com/v/2f6U5yGRFyk?version=3&autoplay=1&autohide=1&rel=0"></param>
+  <param name="allowScriptAccess" value="always"></param>
+  <embed src="https://www.youtube.com/v/2f6U5yGRFyk?version=3&autoplay=1&autohide=1&rel=0"
+         type="application/x-shockwave-flash"
+         allowscriptaccess="always"
+         width="640" height="390"></embed>
+</object></p></article>
  
 </slide>
 
 
 <slide class="thank-you-slide segue nobackground">
-  <aside class="gdbar right"><img src="images/google_developers_icon_128.png"></aside>
+  <aside class="gdbar right"><img src="images/lispy_icon_128.png"></aside>
   <article class="flexbox vleft auto-fadein">
     <h2>&lt;Thank You!&gt;</h2>
-    <p>Important contact information goes here.</p>
+    <p>Here's some contact information.</p>
   </article>
   <p class="auto-fadein" data-config-contact>
     <!-- populated from slide_config.json -->
@@ -355,7 +324,7 @@ function detectFormFactor() {
 
 <slide class="logoslide dark nobackground">
   <article class="flexbox vcenter">
-    <span><img src="images/google_developers_logo_white.png"></span>
+    <span><img src="images/lispy_logo_white.png"></span>
   </article>
 </slide>
 

@@ -13,8 +13,8 @@
    height="1052.3622047"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48.4 r9939"
-   sodipodi:docname="lispy.svg">
+   inkscape:version="0.48.4 r9943 custom"
+   sodipodi:docname="lispy_white.svg">
   <defs
      id="defs4">
     <inkscape:path-effect
@@ -33,13 +33,13 @@
      inkscape:cx="349.17758"
      inkscape:cy="657.18205"
      inkscape:document-units="px"
-     inkscape:current-layer="g3995"
+     inkscape:current-layer="g3841"
      showgrid="false"
-     inkscape:window-width="1920"
-     inkscape:window-height="1026"
-     inkscape:window-x="0"
-     inkscape:window-y="25"
-     inkscape:window-maximized="1" />
+     inkscape:window-width="1412"
+     inkscape:window-height="855"
+     inkscape:window-x="28"
+     inkscape:window-y="23"
+     inkscape:window-maximized="0" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -48,7 +48,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -74,36 +74,22 @@
            inkscape:export-filename="/home/cpt/dev/pres/images/google_developers_icon_128.png"
            transform="matrix(1.2117271,0,0,1.2117271,-68.087022,-71.392578)"
            id="g3841">
-          <text
-             inkscape:export-ydpi="90"
-             inkscape:export-xdpi="90"
-             inkscape:export-filename="/home/cpt/dev/pres/images/google_developers_icon_128.png"
-             sodipodi:linespacing="125%"
-             id="text2991"
-             y="424.56079"
-             x="313.83432"
-             style="font-size:89.70909881999999413px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#cccccc;fill-opacity:1;stroke:none;font-family:Sans"
-             xml:space="preserve"><tspan
-               style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;fill:#cccccc;fill-opacity:1;font-family:Ubuntu;-inkscape-font-specification:Ubuntu Medium"
-               y="424.56079"
-               x="313.83432"
-               id="tspan2993"
-               sodipodi:role="line">(</tspan></text>
-          <text
-             inkscape:export-ydpi="90"
-             inkscape:export-xdpi="90"
-             inkscape:export-filename="/home/cpt/dev/pres/images/google_developers_icon_128.png"
-             xml:space="preserve"
-             style="font-size:89.70909881999999413px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#cccccc;fill-opacity:1;stroke:none;font-family:Sans"
-             x="402.51364"
-             y="424.13834"
-             id="text2995"
-             sodipodi:linespacing="125%"><tspan
-               sodipodi:role="line"
-               id="tspan2997"
-               x="402.51364"
-               y="424.13834"
-               style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;fill:#cccccc;fill-opacity:1;font-family:Ubuntu;-inkscape-font-specification:Ubuntu Medium">)</tspan></text>
+          <g
+             style="font-size:89.70909882px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#cccccc;fill-opacity:1;stroke:none;font-family:Sans"
+             id="text2991">
+            <path
+               d="m 331.32759,397.73777 c -10e-6,7.35617 1.1064,14.26376 3.31924,20.7228 2.2128,6.45906 5.29281,12.34995 9.24004,17.67269 l -7.62528,5.02371 c -4.8443,-5.80119 -8.67189,-12.37986 -11.48276,-19.736 -2.81089,-7.41594 -4.21633,-15.31033 -4.21633,-23.6832 0,-8.37281 1.40544,-16.2373 4.21633,-23.59349 2.81087,-7.4159 6.63846,-14.02446 11.48276,-19.82571 l 7.62528,5.02371 c -3.94723,5.3826 -7.02724,11.3034 -9.24004,17.7624 -2.21284,6.39929 -3.31925,13.27698 -3.31924,20.63309"
+               style="font-variant:normal;font-weight:500;font-stretch:normal;fill:#cccccc;font-family:Ubuntu;-inkscape-font-specification:Ubuntu Medium"
+               id="path3021" />
+          </g>
+          <g
+             style="font-size:89.70909882px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#cccccc;fill-opacity:1;stroke:none;font-family:Sans"
+             id="text2995">
+            <path
+               d="m 415.43175,397.31532 c -1e-5,-7.35612 -1.10642,-14.23381 -3.31924,-20.6331 -2.21283,-6.459 -5.29284,-12.37979 -9.24003,-17.7624 l 7.62527,-5.02371 c 4.84428,5.80125 8.67186,12.40982 11.48277,19.82571 2.81086,7.35619 4.2163,15.22068 4.21632,23.5935 -2e-5,8.37286 -1.40546,16.26726 -4.21632,23.6832 -2.81091,7.35614 -6.63849,13.9348 -11.48277,19.736 l -7.62527,-5.02371 c 3.94719,-5.32275 7.0272,-11.21364 9.24003,-17.67269 2.21282,-6.45905 3.31923,-13.36664 3.31924,-20.7228"
+               style="font-variant:normal;font-weight:500;font-stretch:normal;fill:#cccccc;font-family:Ubuntu;-inkscape-font-specification:Ubuntu Medium"
+               id="path3024" />
+          </g>
           <g
              transform="translate(-1.8280521,0)"
              id="text2999"
