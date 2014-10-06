@@ -44,13 +44,18 @@ URL: https://code.google.com/p/io-2012-slides
 </slide>
 
 
-<slide class="image" >
+<slide  >
   
     <hgroup>
-      <h2>Slide Title</h2>
-      <h3>Subtitle</h3>
+      <h2>Introduction</h2>
+      <h3></h3>
     </hgroup>
-    <article ><p><img alt="Mobile vs desktop users" src="image.png" /></p></article>
+    <article ><p>This is an overview of an ongoing project I've been working on for around six months.</p>
+<ul class="build">
+<li>The Basilisk Langauge</li>
+<li>Overview of how an interpreter works</li>
+<li>Specifics of lispy</li>
+</ul></article>
  
 </slide>
 
@@ -58,24 +63,209 @@ URL: https://code.google.com/p/io-2012-slides
   
     <aside class="gdbar"><img src="images/google_developers_icon_128.png"></aside>
     <hgroup class="auto-fadein">
-      <h2>Segue Slide OF DOOM</h2>
-      <h3>Subtitle</h3>
+      <h2>The Basilisk Language</h2>
+      <h3>An Overview</h3>
     </hgroup>
   
 </slide>
 
-<slide class="big" >
+<slide  >
   
     <hgroup>
-      <h2>Agenda</h2>
-      <h3></h3>
+      <h2>S-expressions</h2>
+      <h3>much parens</h3>
     </hgroup>
-    <article ><p>Things we'll cover (list should build):</p>
-<ul class="build">
-<li>Bullet1</li>
-<li>Bullet2</li>
-<li>Bullet3</li>
+    <article ><p>S-expressions are also known as encapsulated polish notation.</p>
+<p>This follows the pattern operator, oparands.</p>
+<pre class="prettyprint" data-lang="lisp">
+    (+ 1 2)
+    (add 1 2)
+</pre>
+
+<p>I chose s-expressions because they are simple to parse into a tree.</p></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>Grammar</h2>
+      <h3>language specification</h3>
+    </hgroup>
+    <article ><p>Basilisk's language spec is a bit more specific.</p>
+<pre class="prettyprint" data-lang="ebnf">
+    operator = identifier | (symbol {symbol});
+    argument = identifier | number | char | string;
+    s-expression = "(" [whitespace] operator {whitespace argument} [whitespace] ")";
+</pre>
+
+<ul>
+<li>identifier (or id) is a variable</li>
+<li>symbols are +, -, etc.</li>
+<li>numbers, chars, and strings are their respective literals.</li>
 </ul></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>Grammar</h2>
+      <h3>language specification</h3>
+    </hgroup>
+    <article ><p>Some examples of valid &amp; invalid grammars.</p>
+<pre class="prettyprint" data-lang="lisp">
+    (+ 1 2) # valid
+    (add 1 2) # valid
+    (add) # valid
+    (+a 1 2) # invalid
+    (1 1 1) # invalid
+</pre>
+
+<p>In lispy, a list with no operator is shorthand for a data list.</p></article>
+ 
+</slide>
+
+<slide class="segue dark nobackground" >
+  
+    <aside class="gdbar"><img src="images/google_developers_icon_128.png"></aside>
+    <hgroup class="auto-fadein">
+      <h2>Interpreter</h2>
+      <h3>How it works</h3>
+    </hgroup>
+  
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>How an interpreter works</h2>
+      <h3>workflow</h3>
+    </hgroup>
+    <article ><p>An interpreter usually consists of several stages:</p>
+<ul>
+<li>Lexical Analysis (lexer)</li>
+<li>Syntactic Analysis (parser)</li>
+<li>Interpretation</li>
+</ul></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>How an interpreter works</h2>
+      <h3>Lexical Analysis</h3>
+    </hgroup>
+    <article ><p>A lexer reads an input (usually a file) and produces tokens.</p>
+<p>A typical lexer:</p>
+<p>stream of characters -&gt; lexer -&gt; tokens</p>
+<pre class="prettyprint" data-lang="lisp">
+    (+ 1 2)
+</pre>
+
+<pre class="prettyprint" data-lang="json">
+    [
+        {typ: bp, str: "("},
+        {typ: id, str: "+"},
+        {typ: n, str: "1"},
+        {typ: n, str: "2"},
+        {typ: ep, str: ")"}
+    ]
+</pre></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>How an interpreter works</h2>
+      <h3>Syntactical Analysis</h3>
+    </hgroup>
+    <article ><p>A parser reads tokens and builds an abstract syntax tree (AST).</p>
+<p>An ast usually looks like this:</p>
+<p><img alt="Abstract Syntax Tree" src="http://www.redhat.com/magazine/002dec04/features/gcc/figs/ast.png" /></p></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>How an interpreter works</h2>
+      <h3>Interpretation</h3>
+    </hgroup>
+    <article ><p>In the interpretation part you take the tree and evaluate it.</p>
+<p>If all the symbols are defined, this should yield a tree in the form of a basic type.</p>
+<pre class="prettyprint" data-lang="lisp">
+    (+ 1 2) # => 3
+    (+ 1 b) # => 2:5: undefined 'b'
+    (+ 1 (- 4 3)) # => 2
+</pre></article>
+ 
+</slide>
+
+<slide class="segue dark nobackground" >
+  
+    <aside class="gdbar"><img src="images/google_developers_icon_128.png"></aside>
+    <hgroup class="auto-fadein">
+      <h2>lispy</h2>
+      <h3>it's pretty awesome</h3>
+    </hgroup>
+  
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>Lazy Evaluation</h2>
+      <h3>storing work for later</h3>
+    </hgroup>
+    <article ><p>Keep in mind, lispy is a work in progress.</p>
+<p>Lazy evaluation is the practice of storing the unevalutated tree in memory (the symbol table) for evaluation when needed.</p>
+<pre class="prettyprint" data-lang="lisp">
+    (def a (+ 1 b)) # => a
+    (a) # => 1:12: undefined 'b'
+    (def b 1) # => b
+    (a) # => 2
+</pre>
+
+<p>When a is assigned, it is stored as (+1 b), which is evaluated on lines 1 and 3.</p></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>Lambdas</h2>
+      <h3>scoped execution</h3>
+    </hgroup>
+    <article ><p>Lambdas are the way functions are done in lispy, they get their own scope and are evaluated lazily with input.</p>
+<p>Since all data is immutable, a lambda is reevaluated every time you call it.</p>
+<pre class="prettyprint" data-lang="lisp">
+    (def func
+        (lambda ()
+            (def a 2))) # => func
+    (dev a 4) # => a
+    (func) # => a
+    (a) # => 4
+</pre></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>Lambdas</h2>
+      <h3>recursion</h3>
+    </hgroup>
+    <article ><p>Within the scope of a lambda, a variable called self is set with the value of itself. In this way, one can recurse.</p>
+<pre class="prettyprint" data-lang="lisp">
+    (def ! 
+        (lambda (n) 
+            (if n 
+                1 (* n (self (- n 1)))))) # => !
+    (! 40) # => 815915283247897734345611269596115894272000000000
+</pre></article>
  
 </slide>
 
