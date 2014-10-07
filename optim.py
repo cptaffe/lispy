@@ -2,7 +2,7 @@
 
 import copy, ast, tok, err
 
-path = "/Users/cptaffe/Documents/git/lispy/"
+path = "/home/cpt/dev/lispy/"
 
 def give_context(otree, ntree, index):
 	ntree.parent = otree.parent
@@ -144,6 +144,8 @@ class Builtins(object):
 		"=": self.eval_equate,
 		"?": self.eval_if,
 		"@i": self.eval_import,
+		"%": self.eval_mod,
+		"scope": self.eval_scope,
 
 		# verbose builtins
 		"push": self.eval_push,
@@ -237,6 +239,12 @@ class Builtins(object):
 		self.check_arg(tree, 3)
 		tree.child[1].data.string /= tree.child[2].data.string
 		return tree.child[1]
+	def eval_mod(self, tree, scope):
+		for i in range(1, len(tree.child)):
+				tree.child[i] = self.ev.eval_loop(self.ev.active_eval, (tree.child[i], scope))
+		self.check_arg(tree, 3)
+		tree.child[1].data.string %= tree.child[2].data.string
+		return tree.child[1]
 	def eval_lambda(self, tree, scope):
 		sc = Scope()
 		self.check_arg(tree, 3)
@@ -299,6 +307,11 @@ class Builtins(object):
 		return tree
 	def eval_rec_depth(self, tree, scope):
 		print "fuck you"
+	def eval_scope(self, tree, scope):
+		self.check_arg(tree, 1)
+		import pprint
+		for x in scope.vars:
+			print str(x.name) + ": " + str(pprint.pprint(x.tree).pprint())
 
 # variables
 class Var(object):
