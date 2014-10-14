@@ -2,7 +2,7 @@
 
 import copy, ast, tok, err
 
-path = "/home/cpt/dev/lispy/"
+path = "/Users/cptaffe/Documents/git/lispy/"
 
 def give_context(otree, ntree, index):
 	ntree.parent = otree.parent
@@ -12,15 +12,17 @@ def give_context(otree, ntree, index):
 class Eval(object):
 	def __init__(self, parser):
 		self.parser = parser
+		s = Scope()
 		self.vars = Scope()
+		s.add_child(self.vars, "_")
+		self.vars.add_parent(s)
 		self.builtins = Builtins(self)
-		import ast
-		self.vars.add(Var("#t", ast.Ast(tok.Tok("n", 1))))
-		self.vars.add(Var("#f", ast.Ast(tok.Tok("n", 0))))
+		self.vars.add("#t", ast.Ast(tok.Tok("n", 1)))
+		self.vars.add("#f", ast.Ast(tok.Tok("n", 0)))
 
+	# Generator
 	def __iter__(self):
 		return self
-
 	def next(self):
 		self.tree = self.parser.parse()
 		if len(self.tree.child) > 0:
@@ -53,7 +55,6 @@ class Eval(object):
 			return self.eval_subs(tree, scope, recurse)
 		return self.__eval(tree, scope, self.inactive_eval)
 
-
 	def __eval(self, tree, scope, recurse):
 		typ = repr(tree.data.typ) # both astnode & tok
 
@@ -63,13 +64,15 @@ class Eval(object):
 
 		# evaluates identifiers
 		if typ == "id":
-			if not scope.is_in_var(tree.data.string):
-				if not self.builtins.check(tree):
+			func = scope.in_var(tree.data.string)
+			if not func:
+				# builtins check
+				try:
+					return self.builtins.eval(tree, scope, tree.data.string)
+				except KeyError:
 					err.Err("undefined " + "'" + tree.data.string + "'", tree=tree).err()
-				else:
-					return self.builtins.eval, (tree, scope)
 			else:
-				v = give_context(tree, scope.in_var(tree.data.string).tree, 0)
+				v = give_context(tree, func, 0)
 				return recurse, (v, scope)
 
 		# numbers eval to themselves
@@ -79,47 +82,51 @@ class Eval(object):
 			err.Err("unknown type in tree", tree=tree).err()
 
 	def eval_subs(self, tree, scope, recurse):
-		for i in range(0, len(tree.child)):
-			tree.child[i] = self.eval_loop(recurse, (tree.child[i], scope)) # evaluate child trees
+		tree.child = [self.eval_loop(recurse, (t, scope)) for t in tree.child]
 		return tree
 
 class Scope(object):
 	def __init__(self):
-		self.vars = []
+		self.vars = {}
 		self.parent = None
-	def is_in_var(self, string):
-		for v in self.vars:
-			if v.name == string:
-				return True
-		if self.parent:
-			return self.parent.is_in_var(string)
-		return False
-	def is_in_var_local(self, string):
-		for v in self.vars:
-			if v.name == string:
-				return True
-		return False
+		self.child = {}
 	def in_var(self, string):
-		for v in self.vars:
-			if v.name == string:
-				return copy.deepcopy(v)
-		if self.parent:
-			return self.parent.in_var(string)
-		return False
-	def add(self, var):
-		if self.is_in_var_local(var.name):
-			for v in self.vars:
-				if v.name == var.name:
-					v.tree = var.tree
+		split = string.split(':')
+		if len(split) > 1:
+			s = self.in_scope(split[0])
+			if s:
+				return s.in_var(":".join(split[1:]))
+			else:
+				return False
 		else:
-			self.vars.append(var)
-	def add_child(self, scope):
-		scope.parent = self
+			try:
+				return copy.deepcopy(self.vars[string])
+			except KeyError:
+				if self.parent:
+					return self.parent.in_var(string)
+				else:
+					return False
+	def add(self, name, tree):
+		split = name.split(':')
+		if len(split) > 1:
+			self.in_scope(split[0]).add(":".join(split[1:]), tree)
+		else:
+			self.vars[name] = tree
+	def add_parent(self, scope):
+		self.parent = scope
+	def add_child(self, scope, string):
+		self.child[string] = scope
+	def in_scope(self, string):
+		try:
+			return self.child[string]
+		except KeyError:
+			if self.parent:
+				return self.parent.in_scope(string)
+			else:
+				return False
 	def __str__(self):
-		string = ""
-		for v in self.vars:
-			string += "(" + str(v.name) + ": " + str(v.tree) + ")"
-		return string
+		import pprint
+		return "\n".join(sorted([str(x) + ": " + str(pprint.pprint(self.vars[x]).pprint()) for x in self.vars]))
 
 class Builtins(object):
 	def __init__(self, ev):
@@ -137,8 +144,8 @@ class Builtins(object):
 		"*": self.eval_mul,
 		"/": self.eval_div,
 		"@": self.eval_lambda,
-		"!": self.eval_not_eval,
-		"`": self.eval_inactive_list,
+		#"!": self.eval_not_eval,
+		#"`": self.eval_inactive_list,
 		".": self.eval_concat,
 		"{": self.eval_negate,
 		"=": self.eval_equate,
@@ -146,6 +153,11 @@ class Builtins(object):
 		"@i": self.eval_import,
 		"%": self.eval_mod,
 		"scope": self.eval_scope,
+		"nscope": self.eval_namedscope,
+		"newscope": self.eval_newscope,
+		"rescope": self.eval_rescope,
+		"stack": self.eval_stack,
+		"print": self.eval_print,
 
 		# verbose builtins
 		"push": self.eval_push,
@@ -157,50 +169,94 @@ class Builtins(object):
 		"mul": self.eval_mul,
 		"div": self.eval_div,
 		"lambda": self.eval_lambda,
-		"noeval": self.eval_not_eval,
-		"inactive": self.eval_inactive_list,
+		#"noeval": self.eval_not_eval,
+		#"inactive": self.eval_inactive_list,
 		"concat": self.eval_concat,
 		"negate": self.eval_negate,
 		"equate": self.eval_equate,
 		"if": self.eval_if,
 		"import": self.eval_import,
 		}
-	def check(self, tree):
-		if not tree.data.string in self.builtins:
-			return False
-		else:
-			return True
+		self.stack = []
+
 	# checks arguments, given vs. taken
 	def check_arg(self, tree, num):
 		tnum = len(tree.child)
 		if tnum != num:
 			err.Err("arg mismatch " + str(tnum-1) + " for " + str(num-1), tree=tree).err()
-	def eval(self, tree, scope):
-		return self.builtins[tree.data.string](tree.get_parent(), scope)
-	def eval_push(self, tree, scope):
-		# evaluate after push
-		for i in range(1, len(tree.child)):
-				tree.child[i] = self.ev.eval_loop(self.ev.active_eval, (tree.child[i], scope))
-		ls = tree.child[1]
-		if not repr(ls.data.typ) == "ls":
-			err.Err("cannot push to non-list", tree=tree).err()
-		for i in range(2, len(tree.child)):
-			ls.child.append(tree.child[i])
-		return ls
-	def eval_pop(self, tree, scope):
-		# before after push
-		for i in range(1, len(tree.child)):
-				tree.child[i] = self.ev.eval_loop(self.ev.active_eval, (tree.child[i], scope))
-		ls = tree.child[1]
-		if not repr(ls.data.typ) in ["ls", "il"]:
-			err.Err("cannot pop from non-list", tree=tree).err()
-		return ls.child.pop()
+
+	# Call to execute builtin
+	def eval(self, tree, scope, string):
+		tree2 = ast.Ast(tok.Tok("ls"))
+		tree2.child = tree.get_parent().child[1:]
+		self.stack.append([string, copy.deepcopy(tree2)])
+		return self.builtins[string], (tree.get_parent(), scope)
+
+	def eval_stack(self, tree, scope):
+		self.check_arg(tree, 1)
+		import pprint
+		print "\n".join([x[0] + " " + pprint.pprint(x[1]).pprint() for x in self.stack])
+
+	# Language utilities
+	def eval_scope(self, tree, scope):
+		self.check_arg(tree, 1)
+		print scope
+		if len(scope.child):
+			print ", ".join([str(x) for x in scope.child])
+	def eval_namedscope(self, tree, scope):
+		self.check_arg(tree, 2)
+		print scope.in_scope(tree.child[1].data.string)
+	def eval_rescope(self, tree, scope):
+		self.check_arg(tree, 3)
+		s = scope.in_scope(tree.child[1].data.string)
+		if (s):
+			return self.ev.eval_subs, (tree.child[2], s, self.ev.active_eval)
+		else:
+			err.Err("unknown scope", tree=tree).err()
+	def eval_newscope(self, tree, scope):
+		self.check_arg(tree, 2)
+		scope.add_child(Scope(), tree.child[1].data.string)
+	def eval_print(self, tree, scope):
+		self.check_arg(tree, 2)
+		import pprint
+		print pprint.pprint(tree.child[1]).pprint()
+	def eval_import(self, tree, scope):
+		self.check_arg(tree, 2)
+		import codecs, lex, parse, scan
+		# get file
+		f = codecs.open(path + tree.child[1].data.string.replace(':', '/') + '.lsp', encoding='utf-8')
+		oldp = self.ev.parser
+		newp = parse.Parse(lex.Lex(scan.Scan(f)))
+		self.ev.parser = newp
+		tree.child = []
+		for t in self.ev:
+			tree.child.append(t.child[0])
+		self.ev.parser = oldp
+		return tree
+
+	# Lambda (function) evaluation
+	def eval_lambda(self, tree, scope):
+		sc = Scope()
+		self.check_arg(tree, 3)
+		tree = tree.get_parent()
+		sc.add_parent(scope) # add global scope to this scope
+		lam_tree = tree.child[0]
+		sc.add("self", copy.deepcopy(lam_tree)) # self keyword
+		# assign keywords
+		for i, v in enumerate(lam_tree.child[1].child):
+			if i < len(tree.child[1:]):
+				sc.add(v.data.string, self.ev.eval_loop(self.ev.active_eval, (tree.child[i+1], scope)))
+			else:
+				break
+		# deep copy lambda, variables are not deep copied.
+		return self.ev.active_eval(lam_tree.child[2], sc)
+
 	def eval_assign(self, tree, scope):
 		self.check_arg(tree, 3)
 		if repr(tree.child[1].data.typ) == "id":
 			name = tree.child[1].data.string
 			tr = tree.child[2]
-			scope.add(Var(name, tr))
+			scope.add(name, tr)
 		elif repr(tree.child[1].data.typ) == "ls" and repr(tree.child[2].data.typ) == "ls":
 			for i, d in enumerate(tree.child[1].child):
 				name = d.data.string
@@ -208,13 +264,15 @@ class Builtins(object):
 					tr = tree.child[2].child[i]
 				else:
 					tr = copy.deepcopy(tree.child[2].child[-1])
-				scope.add(Var(name, tr))
+				scope.add(name, tr)
 		else:
 			err.Err("cannot assign to non-var", tree=tree).err()
 		return tree.child[1]
 	def eval_eval(self, tree, scope):
 		# double eval
 		return self.ev.eval_loop(self.ev.active_eval, (self.ev.eval_loop(self.ev.active_eval, (tree.child[1], scope)), scope))
+
+	# Mathematical operations
 	def eval_add(self, tree, scope):
 		for i in range(1, len(tree.child)):
 				tree.child[i] = self.ev.eval_loop(self.ev.active_eval, (tree.child[i], scope))
@@ -245,36 +303,49 @@ class Builtins(object):
 		self.check_arg(tree, 3)
 		tree.child[1].data.string %= tree.child[2].data.string
 		return tree.child[1]
-	def eval_lambda(self, tree, scope):
-		sc = Scope()
-		self.check_arg(tree, 3)
-		tree = tree.get_parent()
-		scope.add_child(sc) # add global scope to this scope
-		lam_tree = tree.child[0]
-		sc.add(Var("self", copy.deepcopy(lam_tree))) # self keyword
-		# assign keywords
-		for i, v in enumerate(lam_tree.child[1].child):
-			if i < len(tree.child[1:]):
-				sc.add(Var(v.data.string, self.ev.eval_loop(self.ev.active_eval, (tree.child[i+1], scope))))
-			else:
-				break
-		# deep copy lambda, variables are not deep copied.
-		return self.ev.active_eval(lam_tree.child[2], sc)
-	def eval_inactive_list(self, tree, scope):
-		return self.ev.eval_loop(self.ev.eval_subs, (tree.child[1], scope, self.ev.inactive_eval))
-	def eval_not_eval(self, tree, scope):
-		return tree.child[1]
-	def eval_concat(self, tree, scope):
-		for i in range(1, len(tree.child)):
-			tree.child[i] = self.ev.eval_loop(self.ev.active_eval, (tree.child[i], scope))
-		tree.child[1].child.extend(tree.child[2].child)
-		return tree.child[1]
 	def eval_negate(self, tree, scope):
 		for i in range(1, len(tree.child)):
 				tree.child[i] = self.ev.eval_loop(self.ev.active_eval, (tree.child[i], scope))
 		self.check_arg(tree, 2)
 		tree.child[1].data.string = 0 - tree.child[1].data.string
 		return tree.child[1]
+	#def eval_inactive_list(self, tree, scope):
+	#	return self.ev.eval_loop(self.ev.eval_subs, (tree.child[1], scope, self.ev.inactive_eval))
+	#def eval_not_eval(self, tree, scope):
+	#	return tree.child[1]
+	
+	# List manipulation
+	def eval_concat(self, tree, scope):
+		for i in range(1, len(tree.child)):
+			tree.child[i] = self.ev.eval_loop(self.ev.active_eval, (tree.child[i], scope))
+		tree.child[1].child.extend(tree.child[2].child)
+		return tree.child[1]
+	def eval_push(self, tree, scope):
+		# evaluate after push
+		for i in range(1, len(tree.child)):
+				tree.child[i] = self.ev.eval_loop(self.ev.active_eval, (tree.child[i], scope))
+		ls = tree.child[1]
+		if not repr(ls.data.typ) == "ls":
+			err.Err("cannot push to non-list", tree=tree).err()
+		for i in range(2, len(tree.child)):
+			ls.child.append(tree.child[i])
+		return ls
+	def eval_pop(self, tree, scope):
+		# before after push
+		for i in range(1, len(tree.child)):
+				tree.child[i] = self.ev.eval_loop(self.ev.active_eval, (tree.child[i], scope))
+		ls = tree.child[1]
+		if not repr(ls.data.typ) in ["ls", "il"]:
+			err.Err("cannot pop from non-list", tree=tree).err()
+		return ls.child.pop()
+
+	# Operations involving booleans
+	def eval_if(self, tree, scope):
+		self.check_arg(tree, 4)
+		if self.ev.eval_loop(self.ev.active_eval, (tree.child[1], scope)).data.string == 1:
+			return self.ev.eval_loop(self.ev.active_eval, (tree.child[2], scope))
+		else:
+			return self.ev.active_eval(tree.child[3], scope)
 	def eval_equate(self, tree, scope):
 		for i in range(1, len(tree.child)):
 				tree.child[i] = self.ev.eval_loop(self.ev.active_eval, (tree.child[i], scope))
@@ -286,35 +357,3 @@ class Builtins(object):
 		else:
 			tree.child[1] = ast.Ast(ast.AstNode("id", "#f"))
 		return tree.child[1]
-	def eval_if(self, tree, scope):
-		self.check_arg(tree, 4)
-		if self.ev.eval_loop(self.ev.active_eval, (tree.child[1], scope)).data.string == 1:
-			return self.ev.eval_loop(self.ev.active_eval, (tree.child[2], scope))
-		else:
-			return self.ev.active_eval(tree.child[3], scope)
-	def eval_import(self, tree, scope):
-		self.check_arg(tree, 2)
-		import codecs, lex, parse, scan
-		# get file
-		f = codecs.open(path + tree.child[1].data.string.replace(':', '/') + '.lsp', encoding='utf-8')
-		oldp = self.ev.parser
-		newp = parse.Parse(lex.Lex(scan.Scan(f)))
-		self.ev.parser = newp
-		tree.child = []
-		for t in self.ev:
-			tree.child.append(t.child[0])
-		self.ev.parser = oldp
-		return tree
-	def eval_rec_depth(self, tree, scope):
-		print "fuck you"
-	def eval_scope(self, tree, scope):
-		self.check_arg(tree, 1)
-		import pprint
-		for x in scope.vars:
-			print str(x.name) + ": " + str(pprint.pprint(x.tree).pprint())
-
-# variables
-class Var(object):
-	def __init__(self, name, tree):
-		self.name = name
-		self.tree = tree

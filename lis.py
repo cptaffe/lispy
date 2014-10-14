@@ -15,7 +15,7 @@ class lispy(object):
 		p = parse.Parse(lex.Lex(scan.Scan(f)))
 		for t in lispy_eval(p):
 			if not t == None:
-				print "=> " + str(pprint.pprint(t, self.color).pprint())
+				print "=> " + pprint.pprint(t, self.color).pprint()
 		return self
 
 # error catching iterator
@@ -26,7 +26,7 @@ class lispy_eval(object):
 		return self
 	def next(self):
 		try:
-			return self.eval.next()
+			return next(self.eval)
 		except Exception as e:
 			# EOF
 			if len(str(e)) == 0:

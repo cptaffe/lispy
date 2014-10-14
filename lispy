@@ -14,7 +14,7 @@ if len(sys.argv) == 2:
 		except Exception as e:
 			print >> sys.stderr, str(e) # print to stderr
 	else:
-		print "invalid flag"
+		print("invalid flag")
 else:
 	try:
 		lis.lispy().eval()
