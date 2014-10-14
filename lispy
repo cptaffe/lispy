@@ -7,16 +7,10 @@ import lis, sys
 
 # color option
 # catch-all for errors
-if len(sys.argv) == 2:
-	if sys.argv[1] == '-c':
-		try:
-			lis.lispy(color=True).eval()
-		except Exception as e:
-			print >> sys.stderr, str(e) # print to stderr
-	else:
-		print("invalid flag")
-else:
-	try:
-		lis.lispy().eval()
-	except Exception as e:
-		print >> sys.stderr, str(e) # print to stderr
+
+interp = lis.lispy()
+print interp.version()
+try:
+	interp.eval()
+except Exception as e:
+	print >> sys.stderr, str(e) # print to stderr

@@ -1,0 +1,2 @@
+Basilisk v0.4.2 (interactive interpreter)
+This software's license is available in the associated LICENSE file.

@@ -17,6 +17,8 @@ class lispy(object):
 			if not t == None:
 				print "=> " + pprint.pprint(t, self.color).pprint()
 		return self
+	def version(self):
+		return open("version.txt", 'r').read()
 
 # error catching iterator
 class lispy_eval(object):
