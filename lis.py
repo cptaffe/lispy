@@ -18,7 +18,8 @@ class lispy(object):
 				print "=> " + pprint.pprint(t, self.color).pprint()
 		return self
 	def version(self):
-		return open("version.txt", 'r').read()
+		return """Basilisk v0.4.2 (interactive interpreter)
+This software's license is available in the associated LICENSE file."""
 
 # error catching iterator
 class lispy_eval(object):
