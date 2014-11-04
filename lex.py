@@ -34,7 +34,7 @@ class Lex(object):
 			else:
 				dump = sc.emit() # dump
 				if len(dump.strip()) > 0:
-					err.Err("unknown '" + (dump if len(dump)<=10 else dump[0:10-3]+'...') + "'", pos=sc.get_pos()).err()
+					err.Err("unknown '" + (dump if len(dump) <= 10 else dump[0:10-3] + '...') + "'", pos=sc.get_pos()).err()
 		return self.list
 
 	def lex_list(self):
@@ -63,6 +63,7 @@ class Lex(object):
 				break
 		self.list.append(tok.Tok("id", sc.emit(), pos))
 		return True
+
 	def lex_num(self):
 		sc = self.scan
 		pos = sc.get_pos()
@@ -74,6 +75,7 @@ class Lex(object):
 			return False
 		self.list.append(tok.Tok("n", sc.emit(), pos))
 		return True
+
 	def lex_str(self):
 		sc = self.scan
 		pos = sc.get_pos()
@@ -87,6 +89,7 @@ class Lex(object):
 			return False
 		self.list.append(tok.Tok("str", sc.emit()[1:-1], pos))
 		return True
+
 	def lex_space(self):
 		sc = self.scan
 		while sc.next():
@@ -94,5 +97,6 @@ class Lex(object):
 				sc.backup()
 				break
 		sc.emit() # dump
+
 	def is_symb(self, c):
 		return c in [':', '!', '`', '~', '@', '#', '$', '%', '^', '&', '*', '+', '-', '=', '>', '<', '/', '{', '}', '[', ']', '.']
