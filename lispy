@@ -8,7 +8,7 @@ import lis, sys
 # color option
 # catch-all for errors
 
-interp = lis.lispy()
+interp = lis.lispy(color=True)
 print interp.version()
 try:
 	interp.eval()
